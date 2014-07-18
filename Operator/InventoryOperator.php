@@ -67,7 +67,7 @@ class InventoryOperator implements InventoryOperatorInterface
      */
     public function increase(StockableInterface $stockable, $quantity)
     {
-        if ($quantity < 0) {
+        if ($quantity < 1) {
             throw new \InvalidArgumentException('Quantity of units must be greater than 0.');
         }
 
@@ -83,7 +83,7 @@ class InventoryOperator implements InventoryOperatorInterface
      */
     public function hold(StockableInterface $stockable, $quantity)
     {
-        if ($quantity < 0) {
+        if ($quantity < 1) {
             throw new \InvalidArgumentException('Quantity of units must be greater than 0.');
         }
 
@@ -99,13 +99,19 @@ class InventoryOperator implements InventoryOperatorInterface
      */
     public function release(StockableInterface $stockable, $quantity)
     {
-        if ($quantity < 0) {
+        if ($quantity < 1) {
             throw new \InvalidArgumentException('Quantity of units must be greater than 0.');
+        }
+
+        $onHold = $stockable->getOnHold();
+
+        if($quantity > $onHold){
+            throw new \InvalidArgumentException('Quantity of units cannot exceed holded items number');
         }
 
         $this->eventDispatcher->dispatch(SyliusStockableEvents::PRE_RELEASE, new GenericEvent($stockable));
 
-        $stockable->setOnHold($stockable->getOnHold() - $quantity);
+        $stockable->setOnHold($onHold - $quantity);
 
         $this->eventDispatcher->dispatch(SyliusStockableEvents::POST_RELEASE, new GenericEvent($stockable));
     }
