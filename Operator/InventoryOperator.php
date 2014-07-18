@@ -135,7 +135,7 @@ class InventoryOperator implements InventoryOperatorInterface
             throw new InsufficientStockException($stockable, $quantity);
         }
 
-        $this->eventDispatcher->dispatch(SyliusStockableEvents::PRE_DECREASE, new GenericEvent($stockable));
+        $this->eventDispatcher->dispatch(SyliusStockableEvents::PRE_DECREASE, new GenericEvent($stockable, ['inventory_units' => $inventoryUnits]));
 
         $this->backordersHandler->processBackorders($inventoryUnits);
 
@@ -149,6 +149,6 @@ class InventoryOperator implements InventoryOperatorInterface
 
         $stockable->setOnHand($onHand);
 
-        $this->eventDispatcher->dispatch(SyliusStockableEvents::POST_DECREASE, new GenericEvent($stockable));
+        $this->eventDispatcher->dispatch(SyliusStockableEvents::POST_DECREASE, new GenericEvent($stockable, ['inventory_units' => $inventoryUnits]));
     }
 }
