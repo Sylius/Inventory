@@ -40,61 +40,61 @@ final class AvailabilityCheckerTest extends TestCase
 
     public function testRecognizeStockableAsAvailableIfOnHandQuantityIsGreaterThan0(): void
     {
-        $this->stockable->method('isTracked')->willReturn(true);
-        $this->stockable->method('getOnHand')->willReturn(5);
-        $this->stockable->method('getOnHold')->willReturn(0);
+        $this->stockable->expects(self::once())->method('isTracked')->willReturn(true);
+        $this->stockable->expects(self::once())->method('getOnHand')->willReturn(5);
+        $this->stockable->expects(self::once())->method('getOnHold')->willReturn(0);
 
         self::assertTrue($this->availabilityChecker->isStockAvailable($this->stockable));
     }
 
     public function testRecognizeStockableAsNotAvailableIfOnHandQuantityIsEqualTo0(): void
     {
-        $this->stockable->method('isTracked')->willReturn(true);
-        $this->stockable->method('getOnHand')->willReturn(0);
-        $this->stockable->method('getOnHold')->willReturn(0);
+        $this->stockable->expects(self::once())->method('isTracked')->willReturn(true);
+        $this->stockable->expects(self::once())->method('getOnHand')->willReturn(0);
+        $this->stockable->expects(self::once())->method('getOnHold')->willReturn(0);
 
         self::assertFalse($this->availabilityChecker->isStockAvailable($this->stockable));
     }
 
     public function testRecognizeStockableAsAvailableIfOnHoldQuantityIsLessThanOnHand(): void
     {
-        $this->stockable->method('isTracked')->willReturn(true);
-        $this->stockable->method('getOnHand')->willReturn(5);
-        $this->stockable->method('getOnHold')->willReturn(4);
+        $this->stockable->expects(self::once())->method('isTracked')->willReturn(true);
+        $this->stockable->expects(self::once())->method('getOnHand')->willReturn(5);
+        $this->stockable->expects(self::once())->method('getOnHold')->willReturn(4);
 
         self::assertTrue($this->availabilityChecker->isStockAvailable($this->stockable));
     }
 
     public function testRecognizeStockableAsNotAvailableIfOnHoldQuantityIsSameAsOnHand(): void
     {
-        $this->stockable->method('isTracked')->willReturn(true);
-        $this->stockable->method('getOnHand')->willReturn(5);
-        $this->stockable->method('getOnHold')->willReturn(5);
+        $this->stockable->expects(self::once())->method('isTracked')->willReturn(true);
+        $this->stockable->expects(self::once())->method('getOnHand')->willReturn(5);
+        $this->stockable->expects(self::once())->method('getOnHold')->willReturn(5);
 
         self::assertFalse($this->availabilityChecker->isStockAvailable($this->stockable));
     }
 
     public function testRecognizeStockableAsSufficientIfOnHandMinusOnHoldQuantityIsGreaterThanTheRequiredQuantity(): void
     {
-        $this->stockable->method('isTracked')->willReturn(true);
-        $this->stockable->method('getOnHand')->willReturn(10);
-        $this->stockable->method('getOnHold')->willReturn(3);
+        $this->stockable->expects(self::once())->method('isTracked')->willReturn(true);
+        $this->stockable->expects(self::once())->method('getOnHand')->willReturn(10);
+        $this->stockable->expects(self::once())->method('getOnHold')->willReturn(3);
 
         self::assertTrue($this->availabilityChecker->isStockSufficient($this->stockable, 5));
     }
 
     public function testRecognizeStockableAsSufficientIfOnHandMinusOnHoldQuantityIsEqualToTheRequiredQuantity(): void
     {
-        $this->stockable->method('isTracked')->willReturn(true);
-        $this->stockable->method('getOnHand')->willReturn(10);
-        $this->stockable->method('getOnHold')->willReturn(5);
+        $this->stockable->expects(self::once())->method('isTracked')->willReturn(true);
+        $this->stockable->expects(self::once())->method('getOnHand')->willReturn(10);
+        $this->stockable->expects(self::once())->method('getOnHold')->willReturn(5);
 
         self::assertTrue($this->availabilityChecker->isStockSufficient($this->stockable, 5));
     }
 
     public function testRecognizeStockableAsAvailableOrSufficientIfItIsNotTracked(): void
     {
-        $this->stockable->method('isTracked')->willReturn(false);
+        $this->stockable->expects(self::exactly(2))->method('isTracked')->willReturn(false);
 
         self::assertTrue($this->availabilityChecker->isStockAvailable($this->stockable));
         self::assertTrue($this->availabilityChecker->isStockSufficient($this->stockable, 42));
